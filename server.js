@@ -1,7 +1,6 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const http = require("http");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -10,8 +9,6 @@ const PORT = process.env.PORT || 8080;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
-
-const notes = [];
 
 app.get("/", function (req, res) { //main page route
     res.sendFile(path.join(__dirname, "./public/index.html"));
@@ -33,8 +30,7 @@ app.post("/api/notes", (req, res) => {
         return
     } else {
         // new id = first char and last char of title + 2 digit number + first char and last char of main text
-        newNote.id = newNote.title.charAt(0) + newNote.title.charAt(newNote.title.length-1) + Math.floor(Math.random() * 100) + newNote.text.charAt(0) + newNote.text.charAt(str.length-1);
-        //console.log("New note: " + JSON.stringify(newNote));
+        newNote.id = newNote.title.charAt(0) + newNote.title.charAt(newNote.title.length-1) + Math.floor(Math.random() * 100) + newNote.text.charAt(0) + newNote.text.charAt(newNote.text.length-1);
 
         let noteArray = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
         noteArray.push(newNote); // add new note to array
@@ -43,7 +39,6 @@ app.post("/api/notes", (req, res) => {
     }
 });
 
-//DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete.
 app.delete("/api/notes/:id", (req, res) => {
     const { id } = req.params;
 
